@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Dispatch Input Form</title>
+    <title>Product Dispatch Input Forms</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,14 +22,24 @@
             กรอกรายละเอียดการเบิกสินค้าจากสมุดบันทึกของคุณ
         </p>
 
-        <!-- IMPORTANT: action attribute updated to your n8n Webhook URL -->
-        <form id="dispatchForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8"
+        <!-- Navigation Tabs for PK and PD forms -->
+        <div class="mb-8 flex justify-center space-x-4">
+            <button id="showPkFormButton" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-200 bg-blue-600 text-white shadow-md hover:bg-blue-700">
+                PK Input Form
+            </button>
+            <button id="showPdFormButton" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-200 bg-gray-300 text-gray-800 hover:bg-gray-400">
+                PD Input Form
+            </button>
+        </div>
+
+        <!-- PK Input Form -->
+        <form id="pkForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8"
               action="https://n8n-apmhoydn.ap-southeast-1.clawcloudrun.com/webhook-test/88daf681-1ebd-4c43-a674-31133c587563" method="POST">
 
             <!-- Date -->
             <div>
-                <label for="date" class="block text-sm font-medium text-gray-700 mb-1">วันที่ (ว.ด.ป.)</label>
-                <input type="date" id="date" name="date"
+                <label for="pkDate" class="block text-sm font-medium text-gray-700 mb-1">วันที่ (ว.ด.ป.)</label>
+                <input type="date" id="pkDate" name="date"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
                        required>
             </div>
@@ -44,114 +54,244 @@
 
             <!-- Item ID -->
             <div>
-                <label for="itemId" class="block text-sm font-medium text-gray-700 mb-1">รหัสสินค้า (Item)</label>
-                <input type="text" id="itemId" name="itemId" placeholder="เช่น 310002"
+                <label for="pkItemId" class="block text-sm font-medium text-gray-700 mb-1">รหัสสินค้า (Item)</label>
+                <input type="text" id="pkItemId" name="itemID" placeholder="เช่น 310002"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
                        required>
             </div>
 
             <!-- Product Name -->
             <div>
-                <label for="productName" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสินค้า</label>
-                <input type="text" id="productName" name="productName" placeholder="เช่น คาร์แมกซ์โกลด์"
+                <label for="pkProductName" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสินค้า</label>
+                <input type="text" id="pkProductName" name="productName" placeholder="เช่น คาร์แมกซ์โกลด์"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
                        required>
             </div>
 
             <!-- Description -->
             <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสามัญ</label>
-                <input type="text" id="description" name="description" placeholder="เช่น Diuron"
+                <label for="pkDescription" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสามัญ</label>
+                <input type="text" id="pkDescription" name="description" placeholder="เช่น Diuron"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
             <!-- Size -->
             <div>
-                <label for="size" class="block text-sm font-medium text-gray-700 mb-1">ขนาด</label>
-                <input type="text" id="size" name="size" placeholder="เช่น 20*1000"
+                <label for="pkSize" class="block text-sm font-medium text-gray-700 mb-1">ขนาด</label>
+                <input type="text" id="pkSize" name="size" placeholder="เช่น 20*1000"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
             <!-- Quantity -->
             <div>
-                <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
-                <input type="number" id="quantity" name="quantity" placeholder="เช่น 250"
+                <label for="pkQuantity" class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
+                <input type="number" id="pkQuantity" name="quantity" placeholder="เช่น 250"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
                        min="0" required>
             </div>
 
             <!-- Unit -->
             <div>
-                <label for="unit" class="block text-sm font-medium text-gray-700 mb-1">หน่วย</label>
-                <input type="text" id="unit" name="unit" placeholder="เช่น ลัง"
+                <label for="pkUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วย</label>
+                <input type="text" id="pkUnit" name="unit" placeholder="เช่น ลัง"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
             <!-- Weight -->
             <div>
-                <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">น้ำหนัก</label>
-                <input type="number" id="weight" name="weight" placeholder="เช่น 5000"
+                <label for="pkWeight" class="block text-sm font-medium text-gray-700 mb-1">น้ำหนัก</label>
+                <input type="number" id="pkWeight" name="weight" placeholder="เช่น 5000"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
                        min="0">
             </div>
 
-            <!-- New Field: Weight Unit (หน่วยน้ำหนัก) -->
+            <!-- Weight Unit (หน่วยน้ำหนัก) -->
             <div>
-                <label for="weightUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วยน้ำหนัก</label>
-                <input type="text" id="weightUnit" name="weightUnit" placeholder="เช่น กก."
+                <label for="pkWeightUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วยน้ำหนัก</label>
+                <input type="text" id="pkWeightUnit" name="weightUnit" placeholder="เช่น กก."
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
             <!-- Company -->
             <div>
-                <label for="company" class="block text-sm font-medium text-gray-700 mb-1">บริษัท</label>
-                <input type="text" id="company" name="company" placeholder="เช่น อดามา"
+                <label for="pkCompany" class="block text-sm font-medium text-gray-700 mb-1">บริษัท</label>
+                <input type="text" id="pkCompany" name="company" placeholder="เช่น อดามา"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
             <!-- Department Head -->
             <div>
-                <label for="deptHead" class="block text-sm font-medium text-gray-700 mb-1">หัวหน้าฝ่าย</label>
-                <input type="text" id="deptHead" name="deptHead" placeholder="เช่น ชัยชนะ"
+                <label for="pkDeptHead" class="block text-sm font-medium text-gray-700 mb-1">หัวหน้าฝ่าย</label>
+                <input type="text" id="pkDeptHead" name="deptHead" placeholder="เช่น ชัยชนะ"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
-            <!-- New Field: Actual Production (ผลิตได้จริง) -->
+            <!-- Actual Production (ผลิตได้จริง) -->
             <div>
-                <label for="actualProduction" class="block text-sm font-medium text-gray-700 mb-1">ผลิตได้จริง</label>
-                <input type="text" id="actualProduction" name="actualProduction" placeholder="เช่น เหมา"
+                <label for="pkActualProduction" class="block text-sm font-medium text-gray-700 mb-1">ผลิตได้จริง</label>
+                <input type="text" id="pkActualProduction" name="actualProduction" placeholder="เช่น เหมา"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
             <!-- Remarks Group 1 -->
             <div>
-                <label for="remarks1" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 1)</label>
-                <input type="text" id="remarks1" name="remarks1" placeholder="เช่น กลุ่ม 2"
+                <label for="pkRemarks1" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 1)</label>
+                <input type="text" id="pkRemarks1" name="remarks1" placeholder="เช่น กลุ่ม 2"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
             <!-- Remarks Group 2 -->
             <div>
-                <label for="remarks2" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 2)</label>
-                <input type="text" id="remarks2" name="remarks2" placeholder=""
+                <label for="pkRemarks2" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 2)</label>
+                <input type="text" id="pkRemarks2" name="remarks2" placeholder=""
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
             <!-- Reference No. -->
             <div>
-                <label for="refNo" class="block text-sm font-medium text-gray-700 mb-1">เลขที่อ้างอิง (หมายเหตุ!)</label>
-                <input type="text" id="refNo" name="refNo" placeholder="เช่น CD-01079"
+                <label for="pkRefNo" class="block text-sm font-medium text-gray-700 mb-1">เลขที่อ้างอิง (หมายเหตุ!)</label>
+                <input type="text" id="pkRefNo" name="refNo" placeholder="เช่น CD-01079"
                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
             </div>
 
-            <!-- Submit Button -->
+            <!-- Submit Button for PK Form -->
             <div class="md:col-span-2 flex justify-center mt-6">
                 <button type="submit"
                         class="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-transform duration-200 transform hover:scale-105">
-                    ส่งข้อมูลการเบิกสินค้า
+                    ส่งข้อมูล PK
                 </button>
             </div>
+        </form>
 
+        <!-- PD Input Form -->
+        <form id="pdForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 hidden"
+              action="https://n8n-apmhoydn.ap-southeast-1.clawcloudrun.com/webhook-test/88daf681-1ebd-4c43-a674-31133c587563" method="POST">
+
+            <!-- Date -->
+            <div>
+                <label for="pdDate" class="block text-sm font-medium text-gray-700 mb-1">วันที่ (ว.ด.ป.)</label>
+                <input type="date" id="pdDate" name="date"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
+
+            <!-- PD No. -->
+            <div>
+                <label for="pdNo" class="block text-sm font-medium text-gray-700 mb-1">เลขที่ PD</label>
+                <input type="text" id="pdNo" name="pdNo" placeholder="เช่น PD-2023-001"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
+
+            <!-- Item ID -->
+            <div>
+                <label for="pdItemId" class="block text-sm font-medium text-gray-700 mb-1">รหัสสินค้า (Item)</label>
+                <input type="text" id="pdItemId" name="itemID" placeholder="เช่น 310002"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
+
+            <!-- Product Name -->
+            <div>
+                <label for="pdProductName" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสินค้า</label>
+                <input type="text" id="pdProductName" name="productName" placeholder="เช่น คาร์แมกซ์โกลด์"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="pdDescription" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสามัญ</label>
+                <input type="text" id="pdDescription" name="description" placeholder="เช่น Diuron"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Size -->
+            <div>
+                <label for="pdSize" class="block text-sm font-medium text-gray-700 mb-1">ขนาด</label>
+                <input type="text" id="pdSize" name="size" placeholder="เช่น 20*1000"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Quantity -->
+            <div>
+                <label for="pdQuantity" class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
+                <input type="number" id="pdQuantity" name="quantity" placeholder="เช่น 250"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       min="0" required>
+            </div>
+
+            <!-- Unit -->
+            <div>
+                <label for="pdUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วย</label>
+                <input type="text" id="pdUnit" name="unit" placeholder="เช่น ลัง"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Weight -->
+            <div>
+                <label for="pdWeight" class="block text-sm font-medium text-gray-700 mb-1">น้ำหนัก</label>
+                <input type="number" id="pdWeight" name="weight" placeholder="เช่น 5000"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       min="0">
+            </div>
+
+            <!-- Weight Unit (หน่วยน้ำหนัก) -->
+            <div>
+                <label for="pdWeightUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วยน้ำหนัก</label>
+                <input type="text" id="pdWeightUnit" name="weightUnit" placeholder="เช่น กก."
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Company -->
+            <div>
+                <label for="pdCompany" class="block text-sm font-medium text-gray-700 mb-1">บริษัท</label>
+                <input type="text" id="pdCompany" name="company" placeholder="เช่น อดามา"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Department Head -->
+            <div>
+                <label for="pdDeptHead" class="block text-sm font-medium text-gray-700 mb-1">หัวหน้าฝ่าย</label>
+                <input type="text" id="pdDeptHead" name="deptHead" placeholder="เช่น ชัยชนะ"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Actual Production (ผลิตได้จริง) -->
+            <div>
+                <label for="pdActualProduction" class="block text-sm font-medium text-gray-700 mb-1">ผลิตได้จริง</label>
+                <input type="text" id="pdActualProduction" name="actualProduction" placeholder="เช่น เหมา"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Remarks Group 1 -->
+            <div>
+                <label for="pdRemarks1" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 1)</label>
+                <input type="text" id="pdRemarks1" name="remarks1" placeholder="เช่น กลุ่ม 2"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Remarks Group 2 -->
+            <div>
+                <label for="pdRemarks2" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 2)</label>
+                <input type="text" id="pdRemarks2" name="remarks2" placeholder=""
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Reference No. -->
+            <div>
+                <label for="pdRefNo" class="block text-sm font-medium text-gray-700 mb-1">เลขที่อ้างอิง (หมายเหตุ!)</label>
+                <input type="text" id="pdRefNo" name="refNo" placeholder="เช่น CD-01079"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Submit Button for PD Form -->
+            <div class="md:col-span-2 flex justify-center mt-6">
+                <button type="submit"
+                        class="w-full sm:w-auto px-8 py-3 bg-green-600 text-white font-semibold rounded-md shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-transform duration-200 transform hover:scale-105">
+                    ส่งข้อมูล PD
+                </button>
+            </div>
         </form>
 
         <!-- Message Box for output - Added flex utilities for centering -->
@@ -172,44 +312,98 @@
     </div>
 
     <script>
-        document.getElementById('dispatchForm').addEventListener('submit', function(event) {
-            // Prevent default form submission to handle success message
+        const pkForm = document.getElementById('pkForm');
+        const pdForm = document.getElementById('pdForm');
+        const showPkFormButton = document.getElementById('showPkFormButton');
+        const showPdFormButton = document.getElementById('showPdFormButton');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const reEnterButton = document.getElementById('reEnterButton');
+        const sendReportButton = document.getElementById('sendReportButton');
+
+        // Function to set today's date to a specified input field
+        function setTodayDate(elementId) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById(elementId).value = `${yyyy}-${mm}-${dd}`;
+        }
+
+        // Function to show a specific form and hide the other, and update button styles
+        function showForm(formToShow, formToHide, activeBtn, inactiveBtn) {
+            formToShow.classList.remove('hidden');
+            formToHide.classList.add('hidden');
+            
+            // Update active button style
+            activeBtn.classList.remove('bg-gray-300', 'text-gray-800');
+            activeBtn.classList.add('bg-blue-600', 'text-white');
+            
+            // Update inactive button style
+            inactiveBtn.classList.remove('bg-blue-600', 'text-white');
+            inactiveBtn.classList.add('bg-gray-300', 'text-gray-800');
+            
+            // Hide message box and action buttons when switching forms
+            messageBox.classList.add('hidden');
+            reEnterButton.classList.add('hidden');
+            sendReportButton.classList.add('hidden');
+
+            // Reset the form that is about to be shown and set its date
+            if (formToShow === pkForm) {
+                pkForm.reset();
+                setTodayDate('pkDate');
+            } else {
+                pdForm.reset();
+                setTodayDate('pdDate');
+            }
+        }
+
+        // Event listeners for navigation buttons
+        showPkFormButton.addEventListener('click', function() {
+            showForm(pkForm, pdForm, showPkFormButton, showPdFormButton);
+        });
+
+        showPdFormButton.addEventListener('click', function() {
+            showForm(pdForm, pkForm, showPdFormButton, showPkFormButton);
+        });
+
+        // Universal form submission handler
+        function handleFormSubmission(event) {
             event.preventDefault(); 
+            const form = event.target; 
 
-            const messageBox = document.getElementById('messageBox');
-            const messageText = document.getElementById('messageText');
-            const reEnterButton = document.getElementById('reEnterButton');
-            const sendReportButton = document.getElementById('sendReportButton'); // Get the new button
-            const form = event.target; // Reference to the form
-
-            // Show submitting message
             messageText.textContent = 'กำลังส่งข้อมูลไปยัง Webhook ของ n8n...';
             messageBox.classList.remove('hidden');
             messageBox.classList.remove('bg-green-100', 'border-green-400', 'text-green-700', 'bg-red-100', 'border-red-400', 'text-red-700');
             messageBox.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
-            reEnterButton.classList.add('hidden'); // Hide re-enter button during submission
-            sendReportButton.classList.add('hidden'); // Hide send report button during submission
+            reEnterButton.classList.add('hidden'); 
+            sendReportButton.classList.add('hidden'); 
 
-            // Create a new FormData object from the form
             const formData = new FormData(form);
+            // Add a formType field to distinguish which form was submitted (PK_Input or PD_Input)
+            formData.append('formType', form.id === 'pkForm' ? 'PK_Input' : 'PD_Input');
 
-            // Send the form data to the webhook using fetch API
             fetch(form.action, {
                 method: 'POST',
-                body: formData // Use FormData directly for multipart/form-data
+                body: formData 
             })
             .then(response => {
-                if (response.ok) { // Check if the response status is 200-299
+                if (response.ok) {
                     messageText.textContent = 'ส่งข้อมูลสำเร็จไปยัง n8n แล้ว!';
                     messageBox.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700');
                     messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
                     form.reset(); // Clear the form on success
-                    reEnterButton.classList.remove('hidden'); // Show re-enter button
-                    sendReportButton.classList.remove('hidden'); // Show send report button
-                    return response.text(); // Or response.json() if your webhook returns JSON
+                    // Re-set date for the form that was just submitted
+                    if (form.id === 'pkForm') {
+                        setTodayDate('pkDate');
+                    } else {
+                        setTodayDate('pdDate');
+                    }
+                    reEnterButton.classList.remove('hidden'); 
+                    sendReportButton.classList.remove('hidden'); 
+                    return response.text(); 
                 } else {
-                    // Handle HTTP errors
-                    return response.text().then(text => { // Get the error message from the response
+                    return response.text().then(text => { 
                         throw new Error(`การส่งข้อมูลล้มเหลว. เซิร์ฟเวอร์ตอบกลับด้วยสถานะ: ${response.status}. ข้อความ: ${text}`);
                     });
                 }
@@ -219,45 +413,46 @@
                 messageText.textContent = `ข้อผิดพลาด: ${error.message}. โปรดลองอีกครั้ง.`;
                 messageBox.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700', 'bg-green-100', 'border-green-400', 'text-green-700');
                 messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
-                reEnterButton.classList.remove('hidden'); // Show re-enter button on error
-                sendReportButton.classList.remove('hidden'); // Show send report button on error
+                reEnterButton.classList.remove('hidden'); 
+                sendReportButton.classList.remove('hidden'); 
             });
-        });
+        }
+
+        // Attach submission handlers to both forms
+        pkForm.addEventListener('submit', handleFormSubmission);
+        pdForm.addEventListener('submit', handleFormSubmission);
 
         // Event listener for the "Re-enter Data" button
-        document.getElementById('reEnterButton').addEventListener('click', function() {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.classList.add('hidden'); // Hide the message box
-            document.getElementById('dispatchForm').reset(); // Clear the form
-            const today = new Date(); // Re-set the date to today
-            const yyyy = today.getFullYear(); 
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
-            this.classList.add('hidden'); // Hide itself
-            document.getElementById('sendReportButton').classList.add('hidden'); // Hide send report button
+        reEnterButton.addEventListener('click', function() {
+            messageBox.classList.add('hidden'); 
+            // Reset the currently visible form and set its date
+            if (!pkForm.classList.contains('hidden')) {
+                pkForm.reset();
+                setTodayDate('pkDate');
+            } else {
+                pdForm.reset();
+                setTodayDate('pdDate');
+            }
+            this.classList.add('hidden'); 
+            sendReportButton.classList.add('hidden'); 
         });
 
         // Event listener for the "Send Report" button (now with webhook functionality)
-        document.getElementById('sendReportButton').addEventListener('click', function() {
-            const messageBox = document.getElementById('messageBox');
-            const messageText = document.getElementById('messageText');
-            const form = document.getElementById('dispatchForm'); // Get a reference to the form
+        sendReportButton.addEventListener('click', function() {
+            // Determine which form is currently visible
+            const currentForm = !pkForm.classList.contains('hidden') ? pkForm : pdForm;
 
-            // Show submitting message for the report
             messageText.textContent = 'กำลังส่งรายงานไปยัง Webhook ของ n8n...';
             messageBox.classList.remove('hidden');
             messageBox.classList.remove('bg-green-100', 'border-green-400', 'text-green-700', 'bg-red-100', 'border-red-400', 'text-red-700');
             messageBox.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
 
-            // Create a new FormData object from the form's current values
-            const formData = new FormData(form);
-            
-            // Add a new field specifically for the report status
-            formData.append('reportStatus', 'Finished'); // This is the new value you want to send
+            const formData = new FormData(currentForm);
+            formData.append('reportStatus', 'Finished');
+            // Also add formType to the report for n8n to distinguish (PK_Report or PD_Report)
+            formData.append('formType', currentForm.id === 'pkForm' ? 'PK_Report' : 'PD_Report');
 
-            // Send the form data to the webhook using fetch API
-            fetch(form.action, { // Reusing the same webhook action URL as the main form submit
+            fetch(currentForm.action, { 
                 method: 'POST',
                 body: formData 
             })
@@ -283,14 +478,12 @@
             this.classList.remove('hidden'); 
         });
 
-
         // Optional: Pre-fill date with today's date on page load
         window.onload = function() {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0!
-            const dd = String(today.getDate()).padStart(2, '0');
-            document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
+            setTodayDate('pkDate'); // Set initial date for PK Form
+            setTodayDate('pdDate'); // Set initial date for PD Form (though hidden)
+            // Ensure PK form is shown by default on load
+            showForm(pkForm, pdForm, showPkFormButton, showPdFormButton);
         };
     </script>
 </body>
