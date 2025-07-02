@@ -1,483 +1,490 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบบันทึกข้อมูลอุปกรณ์ IT (ส่งผ่าน Webhook ไป n8n)</title>
+    <title>Product Dispatch Input Forms</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React and ReactDOM CDNs -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel CDN for JSX transformation in browser -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom font for better readability */
         body {
             font-family: 'Inter', sans-serif;
-        }
-        /* Ensure all elements have rounded corners */
-        input, select, textarea, button, .rounded-md {
-            border-radius: 0.375rem; /* Tailwind's rounded-md */
+            background-color: #f3f4f6; /* Light gray background */
         }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="p-4 sm:p-6 md:p-8">
 
-    <script type="text/babel">
-        const { useState } = React;
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-lg shadow-xl border border-gray-200">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-6 text-center">แบบฟอร์มบันทึกการเบิกสินค้า (Product Dispatch Input Form)</h1>
+        <p class="text-gray-600 text-center mb-8">
+            กรอกรายละเอียดการเบิกสินค้าจากสมุดบันทึกของคุณ
+        </p>
 
-        // Component for the IT Asset Form that sends data to n8n webhook
-        const AssetForm = () => {
-            // REPLACE THIS WITH YOUR ACTUAL N8N WEBHOOK URL
-            // ตัวอย่าง: https://your.n8n.instance/webhook/your-unique-path
-            const N8N_WEBHOOK_URL = "https://856d-61-7-138-3.ngrok-free.app/webhook-test/5de4d01f-808b-491a-84c4-ad7d1fcea637"; // <<<--- สำคัญ: เปลี่ยน URL นี้!
+        <!-- Navigation Tabs for PK and PD forms -->
+        <div class="mb-8 flex justify-center space-x-4">
+            <button id="showPkFormButton" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-200 bg-blue-600 text-white shadow-md hover:bg-blue-700">
+                PK Input Form
+            </button>
+            <button id="showPdFormButton" class="px-6 py-3 rounded-md text-lg font-medium transition-colors duration-200 bg-gray-300 text-gray-800 hover:bg-gray-400">
+                PD Input Form
+            </button>
+        </div>
 
-            const [formData, setFormData] = useState({
-                deviceType: '',
-                assetTag: '',
-                brand: '',
-                model: '',
-                serialNumber: '',
-                receiveDate: '',
-                status: 'In Use',
-                os: '',
-                cpu: '',
-                ram: '',
-                storage: '',
-                graphicsCard: '',
-                primaryUser: '',
-                location: '',
-                ipAddress: '',
-                macAddress: '',
-                lastMaintenanceDate: '',
-                maintenanceDetails: '',
-                lastRepairDate: '',
-                repairDetails: '',
-                additionalNotes: ''
-            });
+        <!-- PK Input Form -->
+        <form id="pkForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8"
+              action="https://n8n-apmhoydn.ap-southeast-1.clawcloudrun.com/webhook-test/88daf681-1ebd-4c43-a674-31133c587563" method="POST">
 
-            const [loading, setLoading] = useState(false);
-            const [saveStatus, setSaveStatus] = useState(''); // 'success', 'error', 'loading'
-            const [message, setMessage] = useState(''); // Message to display to the user
+            <!-- Date -->
+            <div>
+                <label for="pkDate" class="block text-sm font-medium text-gray-700 mb-1">วันที่ (ว.ด.ป.)</label>
+                <input type="date" id="pkDate" name="date"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
 
-            const handleChange = (e) => {
-                const { name, value } = e.target;
-                setFormData(prevData => ({
-                    ...prevData,
-                    [name]: value
-                }));
-            };
+            <!-- PK No. -->
+            <div>
+                <label for="pkNo" class="block text-sm font-medium text-gray-700 mb-1">เลขที่ PK</label>
+                <input type="text" id="pkNo" name="pkNo" placeholder="เช่น 6806055"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
 
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                
-                if (N8N_WEBHOOK_URL === "YOUR_N8N_WEBHOOK_URL_HERE" || !N8N_WEBHOOK_URL) {
-                    setMessage('ข้อผิดพลาด: กรุณาระบุ N8N Webhook URL ในโค้ด!');
-                    setSaveStatus('error');
-                    return;
-                }
+            <!-- Item ID -->
+            <div>
+                <label for="pkItemId" class="block text-sm font-medium text-gray-700 mb-1">รหัสสินค้า (Item)</label>
+                <input type="text" id="pkItemId" name="itemID" placeholder="เช่น 310002"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
 
-                setLoading(true);
-                setSaveStatus('loading');
-                setMessage('');
+            <!-- Product Name -->
+            <div>
+                <label for="pkProductName" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสินค้า</label>
+                <input type="text" id="pkProductName" name="productName" placeholder="เช่น คาร์แมกซ์โกลด์"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
 
-                try {
-                    const response = await fetch(N8N_WEBHOOK_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            ...formData,
-                            timestamp: new Date().toISOString() // Add timestamp for when data was sent
-                        }),
-                    });
+            <!-- Description -->
+            <div>
+                <label for="pkDescription" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสามัญ</label>
+                <input type="text" id="pkDescription" name="description" placeholder="เช่น Diuron"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
 
-                    if (response.ok) {
-                        setSaveStatus('success');
-                        setMessage('บันทึกข้อมูลสำเร็จ! ข้อมูลถูกส่งไปยัง n8n Webhook แล้ว');
-                        setFormData({ // Clear form after successful submission
-                            deviceType: '',
-                            assetTag: '',
-                            brand: '',
-                            model: '',
-                            serialNumber: '',
-                            receiveDate: '',
-                            status: 'In Use',
-                            os: '',
-                            cpu: '',
-                            ram: '',
-                            storage: '',
-                            graphicsCard: '',
-                            primaryUser: '',
-                            location: '',
-                            ipAddress: '',
-                            macAddress: '',
-                            lastMaintenanceDate: '',
-                            maintenanceDetails: '',
-                            lastRepairDate: '',
-                            repairDetails: '',
-                            additionalNotes: ''
-                        });
+            <!-- Size -->
+            <div>
+                <label for="pkSize" class="block text-sm font-medium text-gray-700 mb-1">ขนาด</label>
+                <input type="text" id="pkSize" name="size" placeholder="เช่น 20*1000"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Quantity -->
+            <div>
+                <label for="pkQuantity" class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
+                <input type="number" id="pkQuantity" name="quantity" placeholder="เช่น 250"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       min="0" required>
+            </div>
+
+            <!-- Unit -->
+            <div>
+                <label for="pkUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วย</label>
+                <input type="text" id="pkUnit" name="unit" placeholder="เช่น ลัง"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Weight -->
+            <div>
+                <label for="pkWeight" class="block text-sm font-medium text-gray-700 mb-1">น้ำหนัก</label>
+                <input type="number" id="pkWeight" name="weight" placeholder="เช่น 5000"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       min="0">
+            </div>
+
+            <!-- Weight Unit (หน่วยน้ำหนัก) -->
+            <div>
+                <label for="pkWeightUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วยน้ำหนัก</label>
+                <input type="text" id="pkWeightUnit" name="weightUnit" placeholder="เช่น กก."
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Company -->
+            <div>
+                <label for="pkCompany" class="block text-sm font-medium text-gray-700 mb-1">บริษัท</label>
+                <input type="text" id="pkCompany" name="company" placeholder="เช่น อดามา"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Department Head -->
+            <div>
+                <label for="pkDeptHead" class="block text-sm font-medium text-gray-700 mb-1">หัวหน้าฝ่าย</label>
+                <input type="text" id="pkDeptHead" name="deptHead" placeholder="เช่น ชัยชนะ"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Actual Production (ผลิตได้จริง) -->
+            <div>
+                <label for="pkActualProduction" class="block text-sm font-medium text-gray-700 mb-1">ผลิตได้จริง</label>
+                <input type="text" id="pkActualProduction" name="actualProduction" placeholder="เช่น เหมา"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Remarks Group 1 -->
+            <div>
+                <label for="pkRemarks1" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 1)</label>
+                <input type="text" id="pkRemarks1" name="remarks1" placeholder="เช่น กลุ่ม 2"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Remarks Group 2 -->
+            <div>
+                <label for="pkRemarks2" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 2)</label>
+                <input type="text" id="pkRemarks2" name="remarks2" placeholder=""
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Reference No. -->
+            <div>
+                <label for="pkRefNo" class="block text-sm font-medium text-gray-700 mb-1">เลขที่อ้างอิง (หมายเหตุ!)</label>
+                <input type="text" id="pkRefNo" name="refNo" placeholder="เช่น CD-01079"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Submit Button for PK Form -->
+            <div class="md:col-span-2 flex justify-center mt-6">
+                <button type="submit"
+                        class="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-transform duration-200 transform hover:scale-105">
+                    ส่งข้อมูล PK
+                </button>
+            </div>
+        </form>
+
+        <!-- PD Input Form -->
+        <form id="pdForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 hidden"
+              action="https://n8n-apmhoydn.ap-southeast-1.clawcloudrun.com/webhook-test/88daf681-1ebd-4c43-a674-31133c587563" method="POST">
+
+            <!-- Date -->
+            <div>
+                <label for="pdDate" class="block text-sm font-medium text-gray-700 mb-1">วันที่ (ว.ด.ป.)</label>
+                <input type="date" id="pdDate" name="date"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
+
+            <!-- PD No. -->
+            <div>
+                <label for="pdNo" class="block text-sm font-medium text-gray-700 mb-1">เลขที่ PD</label>
+                <input type="text" id="pdNo" name="pdNo" placeholder="เช่น 6806001"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
+
+            <!-- Item ID -->
+            <div>
+                <label for="pdItemId" class="block text-sm font-medium text-gray-700 mb-1">รหัสสินค้า (Item)</label>
+                <input type="text" id="pdItemId" name="itemID" placeholder="เช่น 310002"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
+
+            <!-- Product Name -->
+            <div>
+                <label for="pdProductName" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสินค้า</label>
+                <input type="text" id="pdProductName" name="productName" placeholder="เช่น คาร์แมกซ์โกลด์"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       required>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="pdDescription" class="block text-sm font-medium text-gray-700 mb-1">ชื่อสามัญ</label>
+                <input type="text" id="pdDescription" name="description" placeholder="เช่น Diuron"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Size -->
+            <div>
+                <label for="pdSize" class="block text-sm font-medium text-gray-700 mb-1">ขนาด</label>
+                <input type="text" id="pdSize" name="size" placeholder="เช่น 20*1000"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Quantity -->
+            <div>
+                <label for="pdQuantity" class="block text-sm font-medium text-gray-700 mb-1">จำนวน</label>
+                <input type="number" id="pdQuantity" name="quantity" placeholder="เช่น 250"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       min="0" required>
+            </div>
+
+            <!-- Unit -->
+            <div>
+                <label for="pdUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วย</label>
+                <input type="text" id="pdUnit" name="unit" placeholder="เช่น ลัง"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Weight -->
+            <div>
+                <label for="pdWeight" class="block text-sm font-medium text-gray-700 mb-1">น้ำหนัก</label>
+                <input type="number" id="pdWeight" name="weight" placeholder="เช่น 5000"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+                       min="0">
+            </div>
+
+            <!-- Weight Unit (หน่วยน้ำหนัก) -->
+            <div>
+                <label for="pdWeightUnit" class="block text-sm font-medium text-gray-700 mb-1">หน่วยน้ำหนัก</label>
+                <input type="text" id="pdWeightUnit" name="weightUnit" placeholder="เช่น กก."
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Company -->
+            <div>
+                <label for="pdCompany" class="block text-sm font-medium text-gray-700 mb-1">บริษัท</label>
+                <input type="text" id="pdCompany" name="company" placeholder="เช่น อดามา"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Department Head -->
+            <div>
+                <label for="pdDeptHead" class="block text-sm font-medium text-gray-700 mb-1">หัวหน้าฝ่าย</label>
+                <input type="text" id="pdDeptHead" name="deptHead" placeholder="เช่น ชัยชนะ"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Actual Production (ผลิตได้จริง) -->
+            <div>
+                <label for="pdActualProduction" class="block text-sm font-medium text-gray-700 mb-1">ผลิตได้จริง</label>
+                <input type="text" id="pdActualProduction" name="actualProduction" placeholder="เช่น เหมา"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Remarks Group 1 -->
+            <div>
+                <label for="pdRemarks1" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 1)</label>
+                <input type="text" id="pdRemarks1" name="remarks1" placeholder="เช่น กลุ่ม 2"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Remarks Group 2 -->
+            <div>
+                <label for="pdRemarks2" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ (กลุ่ม 2)</label>
+                <input type="text" id="pdRemarks2" name="remarks2" placeholder=""
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Reference No. -->
+            <div>
+                <label for="pdRefNo" class="block text-sm font-medium text-gray-700 mb-1">เลขที่อ้างอิง (หมายเหตุ!)</label>
+                <input type="text" id="pdRefNo" name="refNo" placeholder="เช่น CD-01079"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200">
+            </div>
+
+            <!-- Submit Button for PD Form -->
+            <div class="md:col-span-2 flex justify-center mt-6">
+                <button type="submit"
+                        class="w-full sm:w-auto px-8 py-3 bg-green-600 text-white font-semibold rounded-md shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-transform duration-200 transform hover:scale-105">
+                    ส่งข้อมูล PD
+                </button>
+            </div>
+        </form>
+
+        <!-- Message Box for output - Added flex utilities for centering -->
+        <div id="messageBox" class="hidden mt-8 p-4 rounded-md shadow-sm flex flex-col items-center text-center" role="alert">
+            <p id="messageText" class="mb-2"></p> <!-- Added mb-2 for spacing -->
+            <!-- Existing Re-enter Data Button -->
+            <div class="flex space-x-4 mt-4"> <!-- Flex container for buttons -->
+                <button id="reEnterButton" class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-200 hidden">
+                    กรอกข้อมูลใหม่
+                </button>
+                <!-- New Button: Send Report (ส่งรายงาน) -->
+                <button id="sendReportButton" class="px-4 py-2 bg-purple-600 text-white font-semibold rounded-md shadow-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-transform duration-200 transform hover:scale-105 hidden">
+                    ส่งรายงาน
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const pkForm = document.getElementById('pkForm');
+        const pdForm = document.getElementById('pdForm');
+        const showPkFormButton = document.getElementById('showPkFormButton');
+        const showPdFormButton = document.getElementById('showPdFormButton');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const reEnterButton = document.getElementById('reEnterButton');
+        const sendReportButton = document.getElementById('sendReportButton');
+
+        // Function to set today's date to a specified input field
+        function setTodayDate(elementId) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById(elementId).value = `${yyyy}-${mm}-${dd}`;
+        }
+
+        // Function to show a specific form and hide the other, and update button styles
+        function showForm(formToShow, formToHide, activeBtn, inactiveBtn) {
+            formToShow.classList.remove('hidden');
+            formToHide.classList.add('hidden');
+            
+            // Update active button style
+            activeBtn.classList.remove('bg-gray-300', 'text-gray-800');
+            activeBtn.classList.add('bg-blue-600', 'text-white');
+            
+            // Update inactive button style
+            inactiveBtn.classList.remove('bg-blue-600', 'text-white');
+            inactiveBtn.classList.add('bg-gray-300', 'text-gray-800');
+            
+            // Hide message box and action buttons when switching forms
+            messageBox.classList.add('hidden');
+            reEnterButton.classList.add('hidden');
+            sendReportButton.classList.add('hidden');
+
+            // Reset the form that is about to be shown and set its date
+            if (formToShow === pkForm) {
+                pkForm.reset();
+                setTodayDate('pkDate');
+            } else {
+                pdForm.reset();
+                setTodayDate('pdDate');
+            }
+        }
+
+        // Event listeners for navigation buttons
+        showPkFormButton.addEventListener('click', function() {
+            showForm(pkForm, pdForm, showPkFormButton, showPdFormButton);
+        });
+
+        showPdFormButton.addEventListener('click', function() {
+            showForm(pdForm, pkForm, showPdFormButton, showPkFormButton);
+        });
+
+        // Universal form submission handler
+        function handleFormSubmission(event) {
+            event.preventDefault(); 
+            const form = event.target; 
+
+            messageText.textContent = 'กำลังส่งข้อมูลไปยัง Webhook ของ n8n...';
+            messageBox.classList.remove('hidden');
+            messageBox.classList.remove('bg-green-100', 'border-green-400', 'text-green-700', 'bg-red-100', 'border-red-400', 'text-red-700');
+            messageBox.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
+            reEnterButton.classList.add('hidden'); 
+            sendReportButton.classList.add('hidden'); 
+
+            const formData = new FormData(form);
+            // Add a formType field to distinguish which form was submitted (PK_Input or PD_Input)
+            formData.append('formType', form.id === 'pkForm' ? 'PK_Input' : 'PD_Input');
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData 
+            })
+            .then(response => {
+                if (response.ok) {
+                    messageText.textContent = 'ส่งข้อมูลสำเร็จไปยัง n8n แล้ว!';
+                    messageBox.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                    messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+                    form.reset(); // Clear the form on success
+                    // Re-set date for the form that was just submitted
+                    if (form.id === 'pkForm') {
+                        setTodayDate('pkDate');
                     } else {
-                        const errorText = await response.text();
-                        throw new Error(`Server responded with status ${response.status}: ${errorText}`);
+                        setTodayDate('pdDate');
                     }
-                } catch (error) {
-                    setSaveStatus('error');
-                    setMessage('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
-                    console.error('Error sending data to webhook:', error);
-                } finally {
-                    setLoading(false);
+                    reEnterButton.classList.remove('hidden'); 
+                    sendReportButton.classList.remove('hidden'); 
+                    return response.text(); 
+                } else {
+                    return response.text().then(text => { 
+                        throw new Error(`การส่งข้อมูลล้มเหลว. เซิร์ฟเวอร์ตอบกลับด้วยสถานะ: ${response.status}. ข้อความ: ${text}`);
+                    });
                 }
-            };
+            })
+            .catch(error => {
+                console.error('ข้อผิดพลาดในการส่งฟอร์ม:', error);
+                messageText.textContent = `ข้อผิดพลาด: ${error.message}. โปรดลองอีกครั้ง.`;
+                messageBox.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700', 'bg-green-100', 'border-green-400', 'text-green-700');
+                messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+                reEnterButton.classList.remove('hidden'); 
+                sendReportButton.classList.remove('hidden'); 
+            });
+        }
 
-            return (
-                <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-4xl">
-                    <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-                        แบบบันทึกข้อมูลอุปกรณ์ IT องค์กร
-                    </h1>
-                    <p className="text-center text-gray-600 mb-8">
-                        กรุณากรอกข้อมูลอุปกรณ์ IT เพื่อการบริหารจัดการและตรวจสอบที่มีประสิทธิภาพ
-                        (ข้อมูลจะถูกส่งไปยัง n8n Webhook ของคุณ)
-                    </p>
+        // Attach submission handlers to both forms
+        pkForm.addEventListener('submit', handleFormSubmission);
+        pdForm.addEventListener('submit', handleFormSubmission);
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <fieldset className="border border-gray-300 p-6 rounded-md">
-                            <legend className="text-lg font-semibold text-gray-700 px-2">ข้อมูลทั่วไปของอุปกรณ์</legend>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                <div>
-                                    <label htmlFor="deviceType" className="block text-sm font-medium text-gray-700">ประเภทอุปกรณ์ <span className="text-red-500">*</span></label>
-                                    <select
-                                        id="deviceType"
-                                        name="deviceType"
-                                        value={formData.deviceType}
-                                        onChange={handleChange}
-                                        required
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    >
-                                        <option value="">เลือกประเภทอุปกรณ์</option>
-                                        <option value="Desktop PC">คอมพิวเตอร์ตั้งโต๊ะ</option>
-                                        <option value="Laptop">โน้ตบุ๊ก</option>
-                                        <option value="Server">เซิร์ฟเวอร์</option>
-                                        <option value="Monitor">จอภาพ</option>
-                                        <option value="Printer">ปริ้นเตอร์</option>
-                                        <option value="Network Device">อุปกรณ์เครือข่าย</option>
-                                        <option value="IP Phone">โทรศัพท์ IP</option>
-                                        <option value="Other Accessories">อุปกรณ์เสริมอื่นๆ</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label htmlFor="assetTag" className="block text-sm font-medium text-gray-700">ชื่ออุปกรณ์ / รหัส Asset Tag <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="text"
-                                        id="assetTag"
-                                        name="assetTag"
-                                        value={formData.assetTag}
-                                        onChange={handleChange}
-                                        required
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น PC-001, LPT-005"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="brand" className="block text-sm font-medium text-gray-700">ยี่ห้อ <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="text"
-                                        id="brand"
-                                        name="brand"
-                                        value={formData.brand}
-                                        onChange={handleChange}
-                                        required
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น Dell, HP, Lenovo"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="model" className="block text-sm font-medium text-gray-700">รุ่น <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="text"
-                                        id="model"
-                                        name="model"
-                                        value={formData.model}
-                                        onChange={handleChange}
-                                        required
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น Latitude 7420, ProDesk 400 G7"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="serialNumber" className="block text-sm font-medium text-gray-700">หมายเลขซีเรียล (Serial Number) <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="text"
-                                        id="serialNumber"
-                                        name="serialNumber"
-                                        value={formData.serialNumber}
-                                        onChange={handleChange}
-                                        required
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="กรอกหมายเลขซีเรียล"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="receiveDate" className="block text-sm font-medium text-gray-700">วันที่รับเข้า / วันที่ติดตั้ง <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="date"
-                                        id="receiveDate"
-                                        name="receiveDate"
-                                        value={formData.receiveDate}
-                                        onChange={handleChange}
-                                        required
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="status" className="block text-sm font-medium text-gray-700">สถานะปัจจุบัน <span className="text-red-500">*</span></label>
-                                    <select
-                                        id="status"
-                                        name="status"
-                                        value={formData.status}
-                                        onChange={handleChange}
-                                        required
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    >
-                                        <option value="In Use">ใช้งานปกติ</option>
-                                        <option value="Spare">สำรอง</option>
-                                        <option value="Under Repair">ส่งซ่อม</option>
-                                        <option value="Pending Disposal">รอจำหน่าย</option>
-                                        <option value="Disposed">จำหน่ายแล้ว</option>
-                                        <option value="Lost">สูญหาย</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </fieldset>
+        // Event listener for the "Re-enter Data" button
+        reEnterButton.addEventListener('click', function() {
+            messageBox.classList.add('hidden'); 
+            // Reset the currently visible form and set its date
+            if (!pkForm.classList.contains('hidden')) {
+                pkForm.reset();
+                setTodayDate('pkDate');
+            } else {
+                pdForm.reset();
+                setTodayDate('pdDate');
+            }
+            this.classList.add('hidden'); 
+            sendReportButton.classList.add('hidden'); 
+        });
 
-                        <fieldset className="border border-gray-300 p-6 rounded-md">
-                            <legend className="text-lg font-semibold text-gray-700 px-2">ข้อมูลจำเพาะ (สำหรับคอมพิวเตอร์/เซิร์ฟเวอร์)</legend>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                <div>
-                                    <label htmlFor="os" className="block text-sm font-medium text-gray-700">ระบบปฏิบัติการ (OS)</label>
-                                    <input
-                                        type="text"
-                                        id="os"
-                                        name="os"
-                                        value={formData.os}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น Windows 11 Pro, macOS Ventura"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="cpu" className="block text-sm font-medium text-gray-700">หน่วยประมวลผล (CPU)</label>
-                                    <input
-                                        type="text"
-                                        id="cpu"
-                                        name="cpu"
-                                        value={formData.cpu}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น Intel Core i7-12700, AMD Ryzen 7 5800X"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="ram" className="block text-sm font-medium text-gray-700">หน่วยความจำ (RAM)</label>
-                                    <input
-                                        type="text"
-                                        id="ram"
-                                        name="ram"
-                                        value={formData.ram}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น 16GB DDR4, 32GB DDR5"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="storage" className="block text-sm font-medium text-gray-700">หน่วยเก็บข้อมูล (Storage)</label>
-                                    <input
-                                        type="text"
-                                        id="storage"
-                                        name="storage"
-                                        value={formData.storage}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น 512GB NVMe SSD, 1TB HDD"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label htmlFor="graphicsCard" className="block text-sm font-medium text-gray-700">การ์ดจอ (Graphics Card)</label>
-                                    <input
-                                        type="text"
-                                        id="graphicsCard"
-                                        name="graphicsCard"
-                                        value={formData.graphicsCard}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น NVIDIA GeForce RTX 3060, Intel Iris Xe"
-                                    />
-                                </div>
-                            </div>
-                        </fieldset>
+        // Event listener for the "Send Report" button (now with webhook functionality)
+        sendReportButton.addEventListener('click', function() {
+            // Determine which form is currently visible
+            const currentForm = !pkForm.classList.contains('hidden') ? pkForm : pdForm;
 
-                        <fieldset className="border border-gray-300 p-6 rounded-md">
-                            <legend className="text-lg font-semibold text-gray-700 px-2">ข้อมูลการใช้งาน / ผู้รับผิดชอบ</legend>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                <div>
-                                    <label htmlFor="primaryUser" className="block text-sm font-medium text-gray-700">ผู้ใช้งานหลัก / แผนก</label>
-                                    <input
-                                        type="text"
-                                        id="primaryUser"
-                                        name="primaryUser"
-                                        value={formData.primaryUser}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น นายสมชาย, แผนกบัญชี"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="location" className="block text-sm font-medium text-gray-700">สถานที่ติดตั้ง / ห้อง</label>
-                                    <input
-                                        type="text"
-                                        id="location"
-                                        name="location"
-                                        value={formData.location}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น ชั้น 3 ห้องประชุม, ออฟฟิศใหญ่"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="ipAddress" className="block text-sm font-medium text-gray-700">IP Address</label>
-                                    <input
-                                        type="text"
-                                        id="ipAddress"
-                                        name="ipAddress"
-                                        value={formData.ipAddress}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น 192.168.1.100"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="macAddress" className="block text-sm font-medium text-gray-700">Mac Address</label>
-                                    <input
-                                        type="text"
-                                        id="macAddress"
-                                        name="macAddress"
-                                        value={formData.macAddress}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น 00:1A:2B:3C:4D:5E"
-                                    />
-                                </div>
-                            </div>
-                        </fieldset>
+            messageText.textContent = 'กำลังส่งรายงานไปยัง Webhook ของ n8n...';
+            messageBox.classList.remove('hidden');
+            messageBox.classList.remove('bg-green-100', 'border-green-400', 'text-green-700', 'bg-red-100', 'border-red-400', 'text-red-700');
+            messageBox.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
 
-                        <fieldset className="border border-gray-300 p-6 rounded-md">
-                            <legend className="text-lg font-semibold text-gray-700 px-2">ข้อมูลการบำรุงรักษา / ประวัติ</legend>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                <div>
-                                    <label htmlFor="lastMaintenanceDate" className="block text-sm font-medium text-gray-700">วันที่บำรุงรักษาล่าสุด</label>
-                                    <input
-                                        type="date"
-                                        id="lastMaintenanceDate"
-                                        name="lastMaintenanceDate"
-                                        value={formData.lastMaintenanceDate}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label htmlFor="maintenanceDetails" className="block text-sm font-medium text-gray-700">รายละเอียดการบำรุงรักษาล่าสุด</label>
-                                    <textarea
-                                        id="maintenanceDetails"
-                                        name="maintenanceDetails"
-                                        value={formData.maintenanceDetails}
-                                        onChange={handleChange}
-                                        rows="3"
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น ทำความสะอาดภายใน, เปลี่ยนซิลิโคน CPU"
-                                    ></textarea>
-                                </div>
-                                <div>
-                                    <label htmlFor="lastRepairDate" className="block text-sm font-medium text-gray-700">วันที่ซ่อมล่าสุด</label>
-                                    <input
-                                        type="date"
-                                        id="lastRepairDate"
-                                        name="lastRepairDate"
-                                        value={formData.lastRepairDate}
-                                        onChange={handleChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label htmlFor="repairDetails" className="block text-sm font-medium text-gray-700">รายละเอียดการซ่อมล่าสุด</label>
-                                    <textarea
-                                        id="repairDetails"
-                                        name="repairDetails"
-                                        value={formData.repairDetails}
-                                        onChange={handleChange}
-                                        rows="3"
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="เช่น เปลี่ยน Hard Drive, ซ่อมพอร์ต USB"
-                                    ></textarea>
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label htmlFor="additionalNotes" className="block text-sm font-medium text-gray-700">หมายเหตุเพิ่มเติม</label>
-                                    <textarea
-                                        id="additionalNotes"
-                                        name="additionalNotes"
-                                        value={formData.additionalNotes}
-                                        onChange={handleChange}
-                                        rows="4"
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        placeholder="ข้อมูลอื่นๆ ที่เกี่ยวข้อง"
-                                    ></textarea>
-                                </div>
-                            </div>
-                        </fieldset>
+            const formData = new FormData(currentForm);
+            formData.append('reportStatus', 'Finished');
+            // Also add formType to the report for n8n to distinguish (PK_Report or PD_Report)
+            formData.append('formType', currentForm.id === 'pkForm' ? 'PK_Report' : 'PD_Report');
 
-                        <div className="flex justify-center mt-6 gap-4">
-                            <button
-                                type="submit"
-                                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                ) : (
-                                    'บันทึกข้อมูล (ส่งไป n8n)'
-                                )}
-                            </button>
-                        </div>
-                    </form>
+            fetch(currentForm.action, { 
+                method: 'POST',
+                body: formData 
+            })
+            .then(response => {
+                if (response.ok) {
+                    messageText.textContent = 'รายงานถูกส่งสำเร็จแล้ว!';
+                    messageBox.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700');
+                    messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(`การส่งรายงานล้มเหลว. เซิร์ฟเวอร์ตอบกลับด้วยสถานะ: ${response.status}. ข้อความ: ${text}`);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('ข้อผิดพลาดในการส่งรายงาน:', error);
+                messageText.textContent = `ข้อผิดพลาดในการส่งรายงาน: ${error.message}. โปรดลองอีกครั้ง.`;
+                messageBox.classList.remove('bg-blue-100', 'border-blue-400', 'text-blue-700', 'bg-green-100', 'border-green-400', 'text-green-700');
+                messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+            });
+            // Keep both buttons visible after the report is sent
+            document.getElementById('reEnterButton').classList.remove('hidden'); 
+            this.classList.remove('hidden'); 
+        });
 
-                    {message && (
-                        <div className={`mt-8 p-6 rounded-md shadow-inner ${saveStatus === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'}`}>
-                            <p className="font-semibold">{message}</p>
-                        </div>
-                    )}
-                </div>
-            );
+        // Optional: Pre-fill date with today's date on page load
+        window.onload = function() {
+            setTodayDate('pkDate'); // Set initial date for PK Form
+            setTodayDate('pdDate'); // Set initial date for PD Form (though hidden)
+            // Ensure PK form is shown by default on load
+            showForm(pkForm, pdForm, showPkFormButton, showPdFormButton);
         };
-
-        // Main App component (simplified to just render the form)
-        const App = () => {
-            return (
-                <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-                    <AssetForm />
-                </div>
-            );
-        };
-
-        // Use createRoot for React 18 compatibility
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
     </script>
 </body>
 </html>
